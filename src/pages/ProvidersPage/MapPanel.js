@@ -48,7 +48,7 @@ function MapPanel({ providers, selectedProvider, onProviderSelect, mapFilter, on
   };
 
   return (
-    <div className="relative h-full bg-white rounded-md shadow-md overflow-hidden flex flex-col">
+    <div className="relative h-full bg-white rounded-md  overflow-hidden flex flex-col">
       {/* Map container - adjusted height to account for filter bar */}
       <div className="flex-1 relative">
         <div ref={mapRef} className="h-full w-full" />

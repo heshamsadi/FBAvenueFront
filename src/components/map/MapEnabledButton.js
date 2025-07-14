@@ -11,7 +11,7 @@ function MapEnabledButton({ onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="bg-main-blue text-white px-4 py-2 rounded-md shadow-lg text-sm font-medium hover:bg-dark-blue transition-colors"
+      className="bg-main-blue text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-dark-blue transition-colors"
     >
       Enable Map View
     </button>

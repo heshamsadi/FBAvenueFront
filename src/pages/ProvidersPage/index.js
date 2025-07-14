@@ -40,21 +40,21 @@ function ProvidersScreen() {
   };
 
   return (
-    <div className="h-screen flex bg-gray-100">
+    <div className="h-screen flex ">
       <Sidebar />
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col">
         <Header />
         <SecondaryNavigation />
 
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto">
           <PageTitle title="Providers lists" />
 
           {/* Map and table stacked view */}
-          <div className="flex-1 flex flex-col bg-gray-100">
+          <div className=" pb-6">
             {/* Map panel */}
-            <div className="flex-1 p-3">
+            <div className="h-[700px] p-3">
               <MapPanel
                 providers={providers}
                 selectedProvider={selectedProvider}
@@ -65,7 +65,7 @@ function ProvidersScreen() {
             </div>
 
             {/* Table panel */}
-            <div className="flex-1 p-3 overflow-hidden">
+            <div className="min-h-[500px] p-3">
               <ProvidersTable
                 providers={providers}
                 selectedProviderId={selectedProviderId}

@@ -9,7 +9,7 @@ import SecondaryNavigation from '../../components/navigation/SecondaryNavigation
  */
 function DashboardPage() {
   return (
-    <div className="h-screen flex bg-gray-100">
+    <div className="h-screen flex ">
       <Sidebar />
 
       {/* Main content area */}

@@ -24,7 +24,7 @@ function HeaderSearch() {
           type="text"
           value={searchValue}
           onChange={handleSearchChange}
-          placeholder="Search..."
+          placeholder="Golabal search by id"
           className="w-full bg-gray-50 text-gray-900 placeholder-gray-500 border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-main-blue focus:border-transparent"
         />
         <button

@@ -82,7 +82,7 @@ function SecondaryNavigation() {
   };
 
   return (
-    <div className="bg-white border-b border-gray-200">
+    <div className="bg-white">
       <div className="px-6 py-2">
         <div className="flex items-center gap-1">
           {navigationItems.map((item) => (
@@ -101,7 +101,7 @@ function SecondaryNavigation() {
                 className={`flex items-center justify-center w-8 h-8 ${
                   activeTab === item.id
                     ? 'bg-dark-blue text-white'
-                    : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    : 'bg-gray-200 text-gray-600'
                 }`}
               >
                 {item.icon}
@@ -121,9 +121,9 @@ function SecondaryNavigation() {
                 type="button"
                 onClick={(e) => handleRemoveTab(item.id, e)}
                 aria-label={`Remove ${item.label} tab`}
-                className={`flex items-center justify-center w-6 h-6 mr-1 rounded-full transition-colors ${
+                className={`flex items-center justify-center w-4 h-4 mr-1 rounded-full transition-colors ${
                   activeTab === item.id
-                    ? 'hover:bg-blue-500 text-white'
+                    ? 'hover:scale-[1.02] bg-white text-main-blue'
                     : 'hover:bg-gray-300 text-gray-500'
                 }`}
               >

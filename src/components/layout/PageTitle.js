@@ -8,8 +8,8 @@ import PropTypes from 'prop-types';
  */
 function PageTitle({ title }) {
   return (
-    <div className="bg-white px-6 py-3 shadow-sm">
-      <h1 className="text-xl font-semibold text-gray-800">{title}</h1>
+    <div className="bg-white px-6 py-3">
+      <h1 className="text-3xl font-semibold text-gray-700">{title}</h1>
     </div>
   );
 }

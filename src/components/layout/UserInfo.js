@@ -11,11 +11,11 @@ import PropTypes from 'prop-types';
 function UserInfo({ name, userRole, lastConnection }) {
   return (
     <div className="bg-main-blue text-white px-4 py-3">
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-center">
         {/* Left side - Name and Role */}
         <div className="flex-1">
           <div className="text-sm font-medium">{name}</div>
-          <div className="text-xs font-medium ">{userRole}</div>
+          <div className="text-sm font-medium ">{userRole}</div>
         </div>
         {/* Right side - Last Connection */}
         <div className="text-right">
