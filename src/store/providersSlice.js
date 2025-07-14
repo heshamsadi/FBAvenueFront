@@ -39,6 +39,18 @@ const useProvidersStore = create((set, get) => ({
     const mockProviders = generateMockProviders();
     set({ providers: mockProviders });
   },
+
+  // Update provider favorites
+  updateProviderFavorites: (providerId, isFavorited) => {
+    const { providers } = get();
+    const updatedProviders = providers.map((provider) => {
+      if (provider.id === providerId) {
+        return { ...provider, favorites: isFavorited };
+      }
+      return provider;
+    });
+    set({ providers: updatedProviders });
+  },
 }));
 
 export default useProvidersStore;

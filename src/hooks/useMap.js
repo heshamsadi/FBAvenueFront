@@ -1,5 +1,9 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster/dist/leaflet.markercluster';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -22,9 +26,10 @@ L.Icon.Default.mergeOptions({
  * @param {number} options.zoom - Initial zoom level
  * @returns {Object} Map actions and state
  */
-function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 11 }) {
+function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 12 }) {
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
+  const markerClusterGroupRef = useRef(null);
 
   // Initialize map
   useEffect(() => {
@@ -37,6 +42,16 @@ function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 11 }) 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
     }).addTo(map);
+
+    // Create marker cluster group
+    markerClusterGroupRef.current = L.markerClusterGroup({
+      chunkedLoading: true,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: true,
+      zoomToBoundsOnClick: true,
+    });
+    
+    map.addLayer(markerClusterGroupRef.current);
 
     mapInstanceRef.current = map;
 
@@ -58,14 +73,14 @@ function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 11 }) 
 
   // Clear all markers
   const clearMarkers = () => {
-    markersRef.current.forEach((marker) => {
-      marker.remove();
-    });
+    if (markerClusterGroupRef.current) {
+      markerClusterGroupRef.current.clearLayers();
+    }
     markersRef.current = [];
   };
 
   // Add markers to map
-  const addMarkers = (providers, onMarkerClick) => {
+  const addMarkers = (providers, onMarkerClick, selectedProviderId = null) => {
     if (!mapInstanceRef.current) return;
 
     // Clear existing markers
@@ -77,20 +92,26 @@ function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 11 }) 
         const config = PROVIDER_TYPE_CONFIG[provider.type];
         const color = config ? config.color : 'bg-gray-500';
         const icon = config ? config.icon : '📍';
+        
+        // Add selected state styling
+        const isSelected = selectedProviderId === provider.id;
+        const markerClass = isSelected 
+          ? `${color} text-white rounded-full w-10 h-10 flex items-center justify-center text-sm font-bold shadow-xl ring-4 ring-yellow-400 ring-opacity-75`
+          : `${color} text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg`;
 
         // Create custom div icon
         const divIcon = L.divIcon({
-          html: `<div class="${color} text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg">
+          html: `<div class="${markerClass}">
                    ${icon}
                  </div>`,
           className: 'custom-div-icon',
-          iconSize: [32, 32],
-          iconAnchor: [16, 16],
+          iconSize: isSelected ? [40, 40] : [32, 32],
+          iconAnchor: isSelected ? [20, 20] : [16, 16],
         });
 
         const marker = L.marker([provider.coordinates.lat, provider.coordinates.lng], {
           icon: divIcon,
-        }).addTo(mapInstanceRef.current);
+        });
 
         // Add popup
         marker.bindPopup(`
@@ -105,6 +126,11 @@ function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 11 }) 
           marker.on('click', () => onMarkerClick(provider));
         }
 
+        // Add marker to cluster group instead of directly to map
+        if (markerClusterGroupRef.current) {
+          markerClusterGroupRef.current.addLayer(marker);
+        }
+
         markersRef.current.push(marker);
       }
     });
@@ -112,10 +138,21 @@ function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 11 }) 
 
   // Fit bounds to show all markers
   const fitBounds = () => {
-    if (mapInstanceRef.current && markersRef.current.length > 0) {
-      // eslint-disable-next-line new-cap
-      const group = new L.featureGroup(markersRef.current);
-      mapInstanceRef.current.fitBounds(group.getBounds().pad(0.1));
+    if (mapInstanceRef.current && markerClusterGroupRef.current && markersRef.current.length > 0) {
+      mapInstanceRef.current.fitBounds(markerClusterGroupRef.current.getBounds().pad(0.1));
+    }
+  };
+
+  // Zoom functions
+  const zoomIn = () => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.zoomIn();
+    }
+  };
+
+  const zoomOut = () => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.zoomOut();
     }
   };
 
@@ -124,6 +161,8 @@ function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 11 }) 
     addMarkers,
     clearMarkers,
     fitBounds,
+    zoomIn,
+    zoomOut,
   };
 }
 

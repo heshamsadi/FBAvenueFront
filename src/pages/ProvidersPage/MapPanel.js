@@ -21,9 +21,9 @@ function MapPanel({ providers, selectedProvider, onProviderSelect }) {
     if (providers) {
       addMarkers(providers, (provider) => {
         onProviderSelect(provider.id);
-      });
+      }, selectedProvider?.id);
     }
-  }, [providers, addMarkers, onProviderSelect]);
+  }, [providers, addMarkers, onProviderSelect, selectedProvider?.id]);
 
   // Pan to selected provider
   useEffect(() => {

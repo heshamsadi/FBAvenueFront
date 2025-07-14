@@ -2,27 +2,39 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { FiStar, FiMail, FiEye, FiEyeOff, FiMinus } from 'react-icons/fi';
 import { PROVIDER_TYPE_CONFIG, PROVIDER_STATUS_CONFIG } from '../../lib/constants';
+import useProvidersStore from '../../store/providersSlice';
 
 /**
  * ProviderRow component - displays a single provider row in the table
  * @param {Object} props
  * @param {Object} props.provider - Provider data
- * @param {boolean} props.isSelected - Whether the row is selected
+ * @param {boolean} props.isSelected - Whether the row is selected for map sync
+ * @param {boolean} props.isBulkSelected - Whether the row is selected for bulk operations
  * @param {Function} props.onSelect - Function to handle provider selection
  * @returns {JSX.Element}
  */
-function ProviderRow({ provider, isSelected, onSelect }) {
+function ProviderRow({ provider, isSelected, isBulkSelected, onSelect }) {
   const [isFavorited, setIsFavorited] = useState(provider.favorites);
+  const { updateProviderFavorites } = useProvidersStore();
   
   const handleFavoriteToggle = (e) => {
     e.stopPropagation();
-    setIsFavorited(!isFavorited);
-    // TODO: Update provider data when backend is connected
+    const newFavoriteState = !isFavorited;
+    setIsFavorited(newFavoriteState);
+    // Update provider data in the store
+    updateProviderFavorites(provider.id, newFavoriteState);
   };
 
   const handleCheckAction = (e) => {
     e.stopPropagation();
-    // Handle check action
+    // Handle check action - show provider details/edit form
+    alert(`Provider Details for ${provider.name}\n\nID: ${provider.id}\nType: ${provider.type}\nCountry: ${provider.country}\nCity: ${provider.city}\nStatus: ${provider.status}\n\nThis would open a details/edit modal in a real app.`);
+  };
+
+  const handleNameClick = (e) => {
+    e.stopPropagation();
+    // Handle name click - show provider details
+    alert(`Provider Details for ${provider.name}\n\nID: ${provider.id}\nType: ${provider.type}\nCountry: ${provider.country}\nCity: ${provider.city}\nStatus: ${provider.status}\n\nThis would open a details page in a real app.`);
   };
 
   // Get status color for dots and eye icons
@@ -80,7 +92,7 @@ function ProviderRow({ provider, isSelected, onSelect }) {
         <div className="flex items-center">
           <input
             type="checkbox"
-            checked={isSelected}
+            checked={isBulkSelected}
             onChange={() => onSelect(provider.id)}
             onClick={(e) => e.stopPropagation()}
             className="h-4 w-4 text-main-blue focus:ring-main-blue border-gray-300 rounded"
@@ -103,7 +115,13 @@ function ProviderRow({ provider, isSelected, onSelect }) {
 
       {/* Name */}
       <td className="px-3 py-4 border-b border-gray-200">
-        <span className="font-medium text-gray-900">{provider.name}</span>
+        <button
+          type="button"
+          onClick={handleNameClick}
+          className="font-medium text-gray-900 hover:text-main-blue hover:underline transition-colors"
+        >
+          {provider.name}
+        </button>
       </td>
 
       {/* Continent */}
@@ -203,6 +221,7 @@ ProviderRow.propTypes = {
     favorites: PropTypes.bool.isRequired,
   }).isRequired,
   isSelected: PropTypes.bool.isRequired,
+  isBulkSelected: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
 };
 

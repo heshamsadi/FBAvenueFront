@@ -6,9 +6,12 @@ import PropTypes from 'prop-types';
  * @param {string} props.sortField - Currently sorted field
  * @param {string} props.sortDirection - Sort direction ('asc' or 'desc')
  * @param {Function} props.onSort - Sort handler function
+ * @param {boolean} props.areAllVisibleSelected - Whether all visible providers are selected
+ * @param {boolean} props.areSomeVisibleSelected - Whether some visible providers are selected
+ * @param {Function} props.onBulkSelect - Bulk select handler function
  * @returns {JSX.Element}
  */
-function TableHeader({ sortField, sortDirection, onSort }) {
+function TableHeader({ sortField, sortDirection, onSort, areAllVisibleSelected, areSomeVisibleSelected, onBulkSelect }) {
   const columns = [
     { key: 'selected', label: 'Selected', sortable: false },
     { key: 'dateAdded', label: 'Date Added', sortable: true },
@@ -48,11 +51,32 @@ function TableHeader({ sortField, sortDirection, onSort }) {
             }`}
             onClick={column.sortable ? () => handleSort(column.key) : undefined}
           >
-            {column.label}
-            {column.sortable && (
-              <span className="ml-1 text-gray-500">
-                {getSortIcon(column.key)}
-              </span>
+            {column.key === 'selected' ? (
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={areAllVisibleSelected}
+                  ref={(el) => {
+                    if (el) {
+                      // eslint-disable-next-line no-param-reassign
+                      el.indeterminate = areSomeVisibleSelected && !areAllVisibleSelected;
+                    }
+                  }}
+                  onChange={(e) => onBulkSelect(e.target.checked)}
+                  className="h-4 w-4 text-main-blue focus:ring-main-blue border-gray-300 rounded"
+                  aria-label="Select all visible providers"
+                />
+                <span className="ml-2">{column.label}</span>
+              </div>
+            ) : (
+              <>
+                {column.label}
+                {column.sortable && (
+                  <span className="ml-1 text-gray-500">
+                    {getSortIcon(column.key)}
+                  </span>
+                )}
+              </>
             )}
           </th>
         ))}
@@ -65,12 +89,18 @@ TableHeader.propTypes = {
   sortField: PropTypes.string,
   sortDirection: PropTypes.oneOf(['asc', 'desc']),
   onSort: PropTypes.func,
+  areAllVisibleSelected: PropTypes.bool,
+  areSomeVisibleSelected: PropTypes.bool,
+  onBulkSelect: PropTypes.func,
 };
 
 TableHeader.defaultProps = {
   sortField: '',
   sortDirection: 'asc',
   onSort: () => {},
+  areAllVisibleSelected: false,
+  areSomeVisibleSelected: false,
+  onBulkSelect: () => {},
 };
 
 export default TableHeader;

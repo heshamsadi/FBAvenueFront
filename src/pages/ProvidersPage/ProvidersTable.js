@@ -32,6 +32,7 @@ function ProvidersTable({
   const [sortField, setSortField] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
   const [favoredFilter, setFavoredFilter] = useState(false);
+  const [selectedProviderIds, setSelectedProviderIds] = useState(new Set());
   
   const itemsPerPage = 10;
 
@@ -115,6 +116,34 @@ function ProvidersTable({
     setCurrentPage(1);
   };
 
+  const handleBulkSelect = (isChecked) => {
+    if (isChecked) {
+      // Select all visible providers
+      const visibleProviderIds = new Set(paginationResult.data.map((p) => p.id));
+      setSelectedProviderIds(visibleProviderIds);
+    } else {
+      // Deselect all
+      setSelectedProviderIds(new Set());
+    }
+  };
+
+  const handleProviderSelect = (providerId) => {
+    const newSelected = new Set(selectedProviderIds);
+    if (newSelected.has(providerId)) {
+      newSelected.delete(providerId);
+    } else {
+      newSelected.add(providerId);
+    }
+    setSelectedProviderIds(newSelected);
+    // Also call the original onProviderSelect for map sync
+    onProviderSelect(providerId);
+  };
+
+  const areAllVisibleSelected = paginationResult.data.length > 0 
+    && paginationResult.data.every((provider) => selectedProviderIds.has(provider.id));
+
+  const areSomeVisibleSelected = paginationResult.data.some((provider) => selectedProviderIds.has(provider.id));
+
   return (
     <div className="bg-white shadow-md rounded-md overflow-hidden h-full flex flex-col">
       {/* Search bar - now using SearchBar component */}
@@ -143,6 +172,9 @@ function ProvidersTable({
             sortField={sortField}
             sortDirection={sortDirection}
             onSort={handleSort}
+            areAllVisibleSelected={areAllVisibleSelected}
+            areSomeVisibleSelected={areSomeVisibleSelected}
+            onBulkSelect={handleBulkSelect}
           />
           <tbody className="bg-white divide-y divide-gray-100">
             {paginationResult.data.length === 0 ? (
@@ -153,7 +185,8 @@ function ProvidersTable({
                   key={provider.id}
                   provider={provider}
                   isSelected={provider.id === selectedProviderId}
-                  onSelect={onProviderSelect}
+                  isBulkSelected={selectedProviderIds.has(provider.id)}
+                  onSelect={handleProviderSelect}
                 />
               ))
             )}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import MapPanel from './MapPanel';
 import ProvidersTable from './ProvidersTable';
 import useProviders from '../../hooks/useProviders';
@@ -7,6 +7,7 @@ import Sidebar from '../../components/layout/Sidebar';
 import PageTitle from '../../components/layout/PageTitle';
 import SecondaryNavigation from '../../components/navigation/SecondaryNavigation';
 import MapControlBar from '../../components/map/MapControlBar';
+import { filterProvidersByMapFilter } from '../../lib/utils';
 
 /**
  * ProvidersScreen - Main screen component for the Providers Lists feature
@@ -47,6 +48,11 @@ function ProvidersScreen() {
     setSearchFilters(newFilters);
   };
 
+  // Filter providers based on map filter for the map display
+  const filteredProvidersForMap = useMemo(() => {
+    return filterProvidersByMapFilter(providers, mapFilter);
+  }, [providers, mapFilter]);
+
   return (
     <div className="h-screen flex ">
       <Sidebar />
@@ -64,7 +70,7 @@ function ProvidersScreen() {
             {/* Map panel */}
             <div className="h-[700px] px-4">
               <MapPanel
-                providers={providers}
+                providers={filteredProvidersForMap}
                 selectedProvider={selectedProvider}
                 onProviderSelect={selectProvider}
               />

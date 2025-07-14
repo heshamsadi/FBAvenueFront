@@ -57,7 +57,7 @@ function MapControlBar({ onMapToggle, selectedFilter, onFilterChange }) {
               name="map-filter"
               value={filter.value}
               label={filter.label}
-              defaultChecked={filter.value === selectedFilter}
+              checked={filter.value === selectedFilter}
               onChange={onFilterChange}
             />
           ))}
