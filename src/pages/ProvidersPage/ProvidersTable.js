@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import ProviderRow from '../../components/table/ProviderRow';
 import SearchBar from '../../components/search/SearchBar';
 import CategoryFilterBar from '../../components/filters/CategoryFilterBar';
 import TableHeader from '../../components/table/TableHeader';
 import TablePagination from '../../components/table/TablePagination';
 import EmptyState from '../../components/table/EmptyState';
+import { filterProviders, filterProvidersByCategory, filterProvidersByMapFilter, sortProviders, paginateProviders } from '../../lib/utils';
 
 /**
  * ProvidersTable feature - displays providers in a table format
@@ -15,6 +16,7 @@ import EmptyState from '../../components/table/EmptyState';
  * @param {Function} props.onProviderSelect - Provider selection handler
  * @param {Object} props.searchFilters - Search filter values
  * @param {Function} props.onSearchFiltersChange - Search filters change handler
+ * @param {string} props.mapFilter - Map filter value
  * @returns {JSX.Element}
  */
 function ProvidersTable({
@@ -23,24 +25,94 @@ function ProvidersTable({
   onProviderSelect,
   searchFilters,
   onSearchFiltersChange,
+  mapFilter,
 }) {
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortField, setSortField] = useState('');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [favoredFilter, setFavoredFilter] = useState(false);
+  
+  const itemsPerPage = 10;
+
+  // Apply all filters and sorting
+  const processedProviders = useMemo(() => {
+    // Start with all providers
+    let filtered = [...providers];
+    
+    // Apply map filter first
+    filtered = filterProvidersByMapFilter(filtered, mapFilter);
+    
+    // Apply search filters
+    const searchFilterObj = {
+      ...searchFilters,
+      favored: favoredFilter,
+    };
+    filtered = filterProviders(filtered, searchFilterObj);
+    
+    // Apply category filter
+    if (selectedCategory) {
+      filtered = filterProvidersByCategory(filtered, selectedCategory);
+    }
+    
+    // Apply sorting
+    if (sortField) {
+      filtered = sortProviders(filtered, sortField, sortDirection);
+    }
+    
+    return filtered;
+  }, [
+    providers,
+    searchFilters,
+    selectedCategory,
+    sortField,
+    sortDirection,
+    favoredFilter,
+    mapFilter,
+  ]);
+
+  // Apply pagination
+  const paginationResult = useMemo(
+    () => paginateProviders(processedProviders, currentPage, itemsPerPage),
+    [processedProviders, currentPage, itemsPerPage],
+  );
 
   const handleFilterChange = (field, value) => {
     onSearchFiltersChange({
       ...searchFilters,
       [field]: value,
     });
+    // Reset to first page when filters change
+    setCurrentPage(1);
   };
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId === selectedCategory ? '' : categoryId);
+    // Reset to first page when category changes
+    setCurrentPage(1);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const handlePageChange = (_page) => {
-    // TODO: Implement pagination logic
-    // onPageChange(page);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      // Toggle direction if same field
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New field, default to ascending
+      setSortField(field);
+      setSortDirection('asc');
+    }
+    // Reset to first page when sorting changes
+    setCurrentPage(1);
+  };
+
+  const handleFavoredFilterToggle = () => {
+    setFavoredFilter(!favoredFilter);
+    // Reset to first page when favored filter changes
+    setCurrentPage(1);
   };
 
   return (
@@ -61,16 +133,22 @@ function ProvidersTable({
       <CategoryFilterBar
         selectedCategory={selectedCategory}
         onCategoryChange={handleCategoryChange}
+        favoredFilter={favoredFilter}
+        onFavoredFilterToggle={handleFavoredFilterToggle}
       />
 
       <div className="flex-1 overflow-auto">
         <table className="min-w-full">
-          <TableHeader />
+          <TableHeader 
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+          />
           <tbody className="bg-white divide-y divide-gray-100">
-            {providers.length === 0 ? (
+            {paginationResult.data.length === 0 ? (
               <EmptyState message="No providers found" colSpan={12} />
             ) : (
-              providers.map((provider) => (
+              paginationResult.data.map((provider) => (
                 <ProviderRow
                   key={provider.id}
                   provider={provider}
@@ -84,11 +162,13 @@ function ProvidersTable({
       </div>
 
       {/* Table footer with pagination */}
-      <TablePagination
-        currentPage={1}
-        totalPages={4}
-        onPageChange={handlePageChange}
-      />
+      {paginationResult.totalPages > 1 && (
+        <TablePagination
+          currentPage={paginationResult.currentPage}
+          totalPages={paginationResult.totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 }
@@ -107,6 +187,7 @@ ProvidersTable.propTypes = {
     favored: PropTypes.bool,
   }),
   onSearchFiltersChange: PropTypes.func,
+  mapFilter: PropTypes.string,
 };
 
 ProvidersTable.defaultProps = {
@@ -119,6 +200,7 @@ ProvidersTable.defaultProps = {
     favored: false,
   },
   onSearchFiltersChange: () => {},
+  mapFilter: '',
 };
 
 export default ProvidersTable;

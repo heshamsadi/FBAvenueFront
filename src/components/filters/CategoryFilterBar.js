@@ -6,9 +6,16 @@ import { FiLayers, FiPlusCircle } from 'react-icons/fi';
  * @param {Object} props
  * @param {string} props.selectedCategory - Currently selected category
  * @param {Function} props.onCategoryChange - Category change handler
+ * @param {boolean} props.favoredFilter - Whether favored filter is active
+ * @param {Function} props.onFavoredFilterToggle - Favored filter toggle handler
  * @returns {JSX.Element}
  */
-function CategoryFilterBar({ selectedCategory, onCategoryChange }) {
+function CategoryFilterBar({
+  selectedCategory,
+  onCategoryChange,
+  favoredFilter,
+  onFavoredFilterToggle,
+}) {
   const initialButtons = [
     { 
       id: 'stack', 
@@ -156,14 +163,24 @@ function CategoryFilterBar({ selectedCategory, onCategoryChange }) {
         
         {/* Filtered by favored button on the right */}
         <div className="ml-auto">
-          <div className="flex items-center rounded overflow-hidden text-sm font-medium transition-colors bg-main-blue text-white">
+          <div className={`flex items-center rounded overflow-hidden text-sm font-medium transition-colors ${
+            favoredFilter
+              ? 'bg-main-blue text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+          >
             {/* Left section with icon */}
             <button
               type="button"
-              className="flex items-center justify-center w-8 h-8 bg-dark-blue text-white"
+              onClick={onFavoredFilterToggle}
+              className={`flex items-center justify-center w-8 h-8 ${
+                favoredFilter
+                  ? 'bg-dark-blue text-white'
+                  : 'bg-gray-200 text-gray-600'
+              }`}
               aria-label="Filter by favored"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="yellow" xmlns="http://www.w3.org/2000/svg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill={favoredFilter ? 'yellow' : 'none'} xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="yellow" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
@@ -171,13 +188,11 @@ function CategoryFilterBar({ selectedCategory, onCategoryChange }) {
             {/* Middle section with title */}
             <button
               type="button"
+              onClick={onFavoredFilterToggle}
               className="flex-1 px-3 py-2 text-left"
             >
               Filtered by favored
             </button>
-
-            {/* Right section with X icon */}
-
           </div>
         </div>
       </div>
@@ -187,12 +202,14 @@ function CategoryFilterBar({ selectedCategory, onCategoryChange }) {
 
 CategoryFilterBar.propTypes = {
   selectedCategory: PropTypes.string,
-  onCategoryChange: PropTypes.func,
+  onCategoryChange: PropTypes.func.isRequired,
+  favoredFilter: PropTypes.bool,
+  onFavoredFilterToggle: PropTypes.func.isRequired,
 };
 
 CategoryFilterBar.defaultProps = {
   selectedCategory: '',
-  onCategoryChange: () => {},
+  favoredFilter: false,
 };
 
 export default CategoryFilterBar; 

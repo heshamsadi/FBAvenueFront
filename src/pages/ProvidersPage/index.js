@@ -88,6 +88,7 @@ function ProvidersScreen() {
                 onProviderSelect={selectProvider}
                 searchFilters={searchFilters}
                 onSearchFiltersChange={handleSearchFiltersChange}
+                mapFilter={mapFilter}
               />
             </div>
           </div>

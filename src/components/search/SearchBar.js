@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import SearchInput from './SearchInput';
 import Select from '../common/Select';
+import { PROVIDER_TYPES, PROVIDER_STATUS } from '../../lib/constants';
 
 /**
  * SearchBar - Table search bar with filters and search inputs
@@ -26,17 +27,18 @@ function SearchBar({
   onStatusFilterChange,
 }) {
   const typeOptions = [
-    { value: 'hotel', label: 'Hotel' },
-    { value: 'pitch', label: 'Pitch' },
-    { value: 'stadium', label: 'Stadium' },
-    { value: 'logistic', label: 'Logistic' },
-    { value: 'airport', label: 'Airport' },
+    { value: PROVIDER_TYPES.HOTEL, label: 'Hotel' },
+    { value: PROVIDER_TYPES.PITCH, label: 'Pitch' },
+    { value: PROVIDER_TYPES.STADIUM, label: 'Stadium' },
+    { value: PROVIDER_TYPES.TRANSPORT, label: 'Transport' },
+    { value: PROVIDER_TYPES.LAUNDRY, label: 'Laundry' },
+    { value: PROVIDER_TYPES.WATER_BOLT, label: 'Water Bolt' },
   ];
 
   const statusOptions = [
-    { value: 'active', label: 'Active' },
-    { value: 'inactive', label: 'Inactive' },
-    { value: 'draft', label: 'Draft' },
+    { value: PROVIDER_STATUS.ACTIVE, label: 'Active' },
+    { value: PROVIDER_STATUS.INACTIVE, label: 'Inactive' },
+    { value: PROVIDER_STATUS.DRAFT, label: 'Draft' },
   ];
 
   return (

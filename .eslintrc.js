@@ -31,6 +31,7 @@ module.exports = {
     'linebreak-style': 'off',
     'no-trailing-spaces': 'off',
     'eol-last': 'off',
+    'max-len': 'off',
     'object-curly-newline': ['error', {
       multiline: true,
       consistent: true,

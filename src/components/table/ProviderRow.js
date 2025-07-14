@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { FiStar, FiMail } from 'react-icons/fi';
+import { FiStar, FiMail, FiEye, FiEyeOff, FiMinus } from 'react-icons/fi';
 import { PROVIDER_TYPE_CONFIG, PROVIDER_STATUS_CONFIG } from '../../lib/constants';
 
 /**
@@ -12,17 +12,63 @@ import { PROVIDER_TYPE_CONFIG, PROVIDER_STATUS_CONFIG } from '../../lib/constant
  * @returns {JSX.Element}
  */
 function ProviderRow({ provider, isSelected, onSelect }) {
-  const [isFavorited, setIsFavorited] = useState(provider.favorites > 0);
+  const [isFavorited, setIsFavorited] = useState(provider.favorites);
   
   const handleFavoriteToggle = (e) => {
     e.stopPropagation();
     setIsFavorited(!isFavorited);
+    // TODO: Update provider data when backend is connected
   };
 
   const handleCheckAction = (e) => {
     e.stopPropagation();
     // Handle check action
   };
+
+  // Get status color for dots and eye icons
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'active':
+        return 'text-green-500';
+      case 'draft':
+        return 'text-yellow-500';
+      case 'inactive':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
+    }
+  };
+
+  // Get status dot color
+  const getStatusDotColor = (status) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-500';
+      case 'draft':
+        return 'bg-yellow-500';
+      case 'inactive':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  // Get eye icon based on view status
+  const getEyeIcon = (viewStatus, statusColor) => {
+    switch (viewStatus) {
+      case 'visible':
+        return <FiEye className={`w-4 h-4 ${statusColor}`} />;
+      case 'invisible':
+        return <FiEyeOff className={`w-4 h-4 ${statusColor}`} />;
+      case 'closed':
+        return <FiMinus className={`w-4 h-4 ${statusColor}`} />;
+      default:
+        return <FiEye className={`w-4 h-4 ${statusColor}`} />;
+    }
+  };
+
+  const statusColor = getStatusColor(provider.status);
+  const statusDotColor = getStatusDotColor(provider.status);
 
   return (
     <tr
@@ -85,14 +131,19 @@ function ProviderRow({ provider, isSelected, onSelect }) {
 
       {/* Status */}
       <td className="px-3 py-4 border-b border-gray-200">
-        <span className="text-gray-700">
-          {PROVIDER_STATUS_CONFIG[provider.status]?.label || provider.status}
-        </span>
+        <div className="flex items-center gap-2">
+          <div className={`w-2 h-2 rounded-full ${statusDotColor}`} />
+          <span className="text-gray-700">
+            {PROVIDER_STATUS_CONFIG[provider.status]?.label || provider.status}
+          </span>
+        </div>
       </td>
 
       {/* Views */}
       <td className="px-3 py-4 border-b border-gray-200">
-        <span className="text-gray-700">{provider.views}</span>
+        <div className="flex items-center justify-center">
+          {getEyeIcon(provider.views, statusColor)}
+        </div>
       </td>
 
       {/* Favorites */}
@@ -146,10 +197,10 @@ ProviderRow.propTypes = {
     continent: PropTypes.string,
     country: PropTypes.string.isRequired,
     city: PropTypes.string.isRequired,
-    workspace: PropTypes.string.isRequired,
+    workspace: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired,
-    views: PropTypes.number.isRequired,
-    favorites: PropTypes.number.isRequired,
+    views: PropTypes.string.isRequired,
+    favorites: PropTypes.bool.isRequired,
   }).isRequired,
   isSelected: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
