@@ -49,9 +49,7 @@ function ProvidersScreen() {
   };
 
   // Filter providers based on map filter for the map display
-  const filteredProvidersForMap = useMemo(() => {
-    return filterProvidersByMapFilter(providers, mapFilter);
-  }, [providers, mapFilter]);
+  const filteredProvidersForMap = useMemo(() => filterProvidersByMapFilter(providers, mapFilter), [providers, mapFilter]);
 
   return (
     <div className="h-screen flex ">

@@ -14,7 +14,7 @@ import { generateMockProviders } from '../lib/mockData';
  */
 const useProvidersStore = create((set, get) => ({
   // State
-  providers: [],
+  providers: generateMockProviders(), // Initialize with data immediately
   selectedProviderId: null,
   filterType: 'all',
 

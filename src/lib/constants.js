@@ -1,3 +1,12 @@
+import { 
+  FiHome, 
+  FiTarget, 
+  FiGrid, 
+  FiTruck, 
+  FiPackage, 
+  FiDroplet, 
+} from 'react-icons/fi';
+
 /**
  * Provider type constants
  */
@@ -17,32 +26,32 @@ export const PROVIDER_TYPE_CONFIG = {
   [PROVIDER_TYPES.HOTEL]: {
     label: 'Hotel',
     color: 'bg-main-blue',
-    icon: '🏨',
+    icon: FiHome,
   },
   [PROVIDER_TYPES.PITCH]: {
     label: 'Pitch',
     color: 'bg-green-500',
-    icon: '⚽',
+    icon: FiTarget,
   },
   [PROVIDER_TYPES.STADIUM]: {
     label: 'Stadium',
     color: 'bg-red-500',
-    icon: '🏟️',
+    icon: FiGrid,
   },
   [PROVIDER_TYPES.TRANSPORT]: {
     label: 'Transport',
     color: 'bg-purple-500',
-    icon: '🚗',
+    icon: FiTruck,
   },
   [PROVIDER_TYPES.LAUNDRY]: {
     label: 'Laundry',
     color: 'bg-blue-500',
-    icon: '🧺',
+    icon: FiPackage,
   },
   [PROVIDER_TYPES.WATER_BOLT]: {
     label: 'Water Bolt',
     color: 'bg-cyan-500',
-    icon: '💧',
+    icon: FiDroplet,
   },
 };
 

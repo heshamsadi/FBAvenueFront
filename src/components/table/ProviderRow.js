@@ -10,10 +10,11 @@ import useProvidersStore from '../../store/providersSlice';
  * @param {Object} props.provider - Provider data
  * @param {boolean} props.isSelected - Whether the row is selected for map sync
  * @param {boolean} props.isBulkSelected - Whether the row is selected for bulk operations
- * @param {Function} props.onSelect - Function to handle provider selection
+ * @param {Function} props.onSelect - Function to handle checkbox selection
+ * @param {Function} props.onRowNameClick - Function to handle row name click (optional)
  * @returns {JSX.Element}
  */
-function ProviderRow({ provider, isSelected, isBulkSelected, onSelect }) {
+function ProviderRow({ provider, isSelected, isBulkSelected, onSelect, onRowNameClick }) {
   const [isFavorited, setIsFavorited] = useState(provider.favorites);
   const { updateProviderFavorites } = useProvidersStore();
   
@@ -33,8 +34,23 @@ function ProviderRow({ provider, isSelected, isBulkSelected, onSelect }) {
 
   const handleNameClick = (e) => {
     e.stopPropagation();
-    // Handle name click - show provider details
-    alert(`Provider Details for ${provider.name}\n\nID: ${provider.id}\nType: ${provider.type}\nCountry: ${provider.country}\nCity: ${provider.city}\nStatus: ${provider.status}\n\nThis would open a details page in a real app.`);
+    if (onRowNameClick) {
+      onRowNameClick(provider.id);
+    }
+  };
+
+  const handleRowClick = (e) => {
+    // Only handle row clicks if it's not on interactive elements
+    if (e.target.tagName === 'TD' || e.target.tagName === 'TR') {
+      if (onRowNameClick) {
+        onRowNameClick(provider.id);
+      }
+    }
+  };
+
+  const handleCheckboxClick = (e) => {
+    e.stopPropagation();
+    onSelect(provider.id);
   };
 
   // Get status color for dots and eye icons
@@ -84,8 +100,8 @@ function ProviderRow({ provider, isSelected, isBulkSelected, onSelect }) {
 
   return (
     <tr
-      onClick={() => onSelect(provider.id)}
-      className={`hover:bg-gray-50 cursor-pointer transition-colors text-sm ${isSelected ? 'bg-blue-50' : ''}`}
+      className={`hover:bg-gray-50 transition-colors text-sm cursor-pointer ${isSelected ? 'bg-blue-50' : ''}`}
+      onClick={handleRowClick}
     >
       {/* Selected */}
       <td className="px-3 py-4 border-b border-gray-200">
@@ -93,8 +109,7 @@ function ProviderRow({ provider, isSelected, isBulkSelected, onSelect }) {
           <input
             type="checkbox"
             checked={isBulkSelected}
-            onChange={() => onSelect(provider.id)}
-            onClick={(e) => e.stopPropagation()}
+            onChange={handleCheckboxClick}
             className="h-4 w-4 text-main-blue focus:ring-main-blue border-gray-300 rounded"
             aria-label={`Select ${provider.name}`}
           />
@@ -117,7 +132,13 @@ function ProviderRow({ provider, isSelected, isBulkSelected, onSelect }) {
       <td className="px-3 py-4 border-b border-gray-200">
         <button
           type="button"
-          onClick={handleNameClick}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onRowNameClick) {
+              onRowNameClick(provider.id);
+            }
+            handleNameClick(e);
+          }}
           className="font-medium text-gray-900 hover:text-main-blue hover:underline transition-colors"
         >
           {provider.name}
@@ -223,6 +244,11 @@ ProviderRow.propTypes = {
   isSelected: PropTypes.bool.isRequired,
   isBulkSelected: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
+  onRowNameClick: PropTypes.func,
+};
+
+ProviderRow.defaultProps = {
+  onRowNameClick: null,
 };
 
 export default ProviderRow;

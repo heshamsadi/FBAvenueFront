@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import useMap from '../../hooks/useMap';
 import MapControls from '../../components/map/MapControls';
 import MapEnabledButton from '../../components/map/MapEnabledButton';
+import ProviderModal from '../../components/map/ProviderModal';
 
 /**
  * MapPanel feature - displays a map with provider markers
@@ -15,6 +16,10 @@ import MapEnabledButton from '../../components/map/MapEnabledButton';
 function MapPanel({ providers, selectedProvider, onProviderSelect }) {
   const mapRef = useRef(null);
   const { panTo, addMarkers, zoomIn, zoomOut } = useMap({ mapRef });
+
+  const handleCloseModal = () => {
+    onProviderSelect(null);
+  };
 
   // Update markers when providers change
   useEffect(() => {
@@ -50,6 +55,13 @@ function MapPanel({ providers, selectedProvider, onProviderSelect }) {
 
       <MapEnabledButton />
       <MapControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} />
+      
+      {/* Provider Details Modal */}
+      <ProviderModal
+        provider={selectedProvider}
+        onClose={handleCloseModal}
+        mapRef={mapRef}
+      />
     </div>
   );
 }

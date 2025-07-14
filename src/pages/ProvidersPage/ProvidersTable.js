@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import ProviderRow from '../../components/table/ProviderRow';
 import SearchBar from '../../components/search/SearchBar';
 import CategoryFilterBar from '../../components/filters/CategoryFilterBar';
@@ -33,6 +33,7 @@ function ProvidersTable({
   const [sortDirection, setSortDirection] = useState('asc');
   const [favoredFilter, setFavoredFilter] = useState(false);
   const [selectedProviderIds, setSelectedProviderIds] = useState(new Set());
+  const [lastSelectedProviderId, setLastSelectedProviderId] = useState(null);
   
   const itemsPerPage = 10;
 
@@ -95,6 +96,7 @@ function ProvidersTable({
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    // Allow page changes while preserving selection
   };
 
   const handleSort = (field) => {
@@ -135,9 +137,37 @@ function ProvidersTable({
       newSelected.add(providerId);
     }
     setSelectedProviderIds(newSelected);
-    // Also call the original onProviderSelect for map sync
+  };
+
+  const handleRowNameClick = (providerId) => {
+    // When provider name is clicked, select for map sync
     onProviderSelect(providerId);
   };
+
+  // Effect to handle map provider selection - switch to page if selected provider is not visible
+  // Only auto-switch when selection actually changes, not during manual pagination
+  React.useEffect(() => {
+    if (selectedProviderId && selectedProviderId !== lastSelectedProviderId) {
+      setLastSelectedProviderId(selectedProviderId);
+      
+      // Check if provider is visible on current page
+      const isProviderVisible = paginationResult.data.some((p) => p.id === selectedProviderId);
+      if (!isProviderVisible && processedProviders.length > 0) {
+        const providerIndex = processedProviders.findIndex((p) => p.id === selectedProviderId);
+        if (providerIndex !== -1) {
+          const targetPage = Math.floor(providerIndex / itemsPerPage) + 1;
+          setCurrentPage(targetPage);
+        }
+      }
+    }
+  }, [selectedProviderId, lastSelectedProviderId, processedProviders, paginationResult.data, itemsPerPage]);
+
+  // Reset lastSelectedProviderId when selectedProviderId becomes null
+  React.useEffect(() => {
+    if (!selectedProviderId) {
+      setLastSelectedProviderId(null);
+    }
+  }, [selectedProviderId]);
 
   const areAllVisibleSelected = paginationResult.data.length > 0 
     && paginationResult.data.every((provider) => selectedProviderIds.has(provider.id));
@@ -187,6 +217,7 @@ function ProvidersTable({
                   isSelected={provider.id === selectedProviderId}
                   isBulkSelected={selectedProviderIds.has(provider.id)}
                   onSelect={handleProviderSelect}
+                  onRowNameClick={handleRowNameClick}
                 />
               ))
             )}

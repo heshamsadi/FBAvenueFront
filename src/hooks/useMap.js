@@ -9,6 +9,16 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { PROVIDER_TYPE_CONFIG } from '../lib/constants';
 
+// Map marker symbols (simple text/symbols for Leaflet HTML)
+const MARKER_SYMBOLS = {
+  hotel: '🏨',
+  pitch: '⚽',
+  stadium: '🏟️',
+  transport: '🚗',
+  laundry: '🧺',
+  water_bolt: '💧',
+};
+
 // Fix Leaflet default marker icon issue
 // eslint-disable-next-line no-underscore-dangle
 delete L.Icon.Default.prototype._getIconUrl;
@@ -91,7 +101,7 @@ function useMap({ mapRef, center = { lat: 33.5731, lng: -7.5898 }, zoom = 12 }) 
       if (provider.coordinates) {
         const config = PROVIDER_TYPE_CONFIG[provider.type];
         const color = config ? config.color : 'bg-gray-500';
-        const icon = config ? config.icon : '📍';
+        const icon = MARKER_SYMBOLS[provider.type] || '📍';
         
         // Add selected state styling
         const isSelected = selectedProviderId === provider.id;

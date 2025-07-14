@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import useProvidersStore from '../store/providersSlice';
 
 /**
@@ -13,13 +13,10 @@ function useProviders() {
     setSelectedProvider,
     setFilterType,
     getFilteredProviders,
-    initializeProviders,
   } = useProvidersStore();
 
-  // Initialize providers on mount
-  useEffect(() => {
-    initializeProviders();
-  }, [initializeProviders]);
+  // Note: Providers are now initialized directly in the store, 
+  // so no need for useEffect initialization
 
   // Get filtered providers
   const filteredProviders = useMemo(
