@@ -29,6 +29,8 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off', // Disabled to allow react-router-dom
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'linebreak-style': 'off',
+    'no-trailing-spaces': 'off',
+    'eol-last': 'off',
     'object-curly-newline': ['error', {
       multiline: true,
       consistent: true,

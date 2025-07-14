@@ -21,9 +21,9 @@ function FilterRadio({ id, name, value, label, checked, onChange }) {
         value={value}
         checked={checked}
         onChange={onChange}
-        className="w-4 h-4 text-main-blue border-gray-300 focus:ring-main-blue"
+        className="w-4 h-4 text-main-blue focus:ring-main-blue hover:cursor-pointer"
       />
-      <label htmlFor={id} className="ml-2 text-sm text-gray-700">
+      <label htmlFor={id} className="ml-2 text-l text-gray-700 font-medium hover:cursor-pointer">
         {label}
       </label>
     </div>

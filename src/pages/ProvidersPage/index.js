@@ -6,6 +6,7 @@ import Header from '../../components/header/Header';
 import Sidebar from '../../components/layout/Sidebar';
 import PageTitle from '../../components/layout/PageTitle';
 import SecondaryNavigation from '../../components/navigation/SecondaryNavigation';
+import MapControlBar from '../../components/map/MapControlBar';
 
 /**
  * ProvidersScreen - Main screen component for the Providers Lists feature
@@ -19,6 +20,9 @@ function ProvidersScreen() {
     selectProvider,
   } = useProviders();
 
+  // Map enabled state
+  const [mapEnabled, setMapEnabled] = useState(true);
+
   // Map filter state
   const [mapFilter, setMapFilter] = useState('all');
 
@@ -30,6 +34,10 @@ function ProvidersScreen() {
     status: '',
     favored: false,
   });
+
+  const handleMapToggle = () => {
+    setMapEnabled(!mapEnabled);
+  };
 
   const handleMapFilterChange = (e) => {
     setMapFilter(e.target.value);
@@ -54,13 +62,21 @@ function ProvidersScreen() {
           {/* Map and table stacked view */}
           <div className=" pb-6">
             {/* Map panel */}
-            <div className="h-[700px] p-3">
+            <div className="h-[700px] px-4">
               <MapPanel
                 providers={providers}
                 selectedProvider={selectedProvider}
                 onProviderSelect={selectProvider}
-                mapFilter={mapFilter}
-                onMapFilterChange={handleMapFilterChange}
+              />
+            </div>
+
+            {/* Map control bar */}
+            <div className="px-4">
+              <MapControlBar
+                mapEnabled={mapEnabled}
+                onMapToggle={handleMapToggle}
+                selectedFilter={mapFilter}
+                onFilterChange={handleMapFilterChange}
               />
             </div>
 

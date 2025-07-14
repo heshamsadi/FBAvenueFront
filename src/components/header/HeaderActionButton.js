@@ -10,16 +10,25 @@ import PropTypes from 'prop-types';
  */
 function HeaderActionButton({ icon, label, onClick }) {
   return (
-    <button
-      type="button"
-      className="bg-main-blue hover:bg-dark-blue text-white px-4 py-2 rounded text-sm font-medium transition-colors"
-      onClick={onClick}
-    >
-      <span className="flex items-center gap-2">
+    <div className="flex items-center rounded overflow-hidden text-sm font-medium transition-colors bg-main-blue text-white hover:bg-dark-blue">
+      {/* Left darker section with icon */}
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex items-center justify-center w-8 h-8 bg-dark-blue text-white"
+      >
         {icon}
+      </button>
+
+      {/* Right section with title */}
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex-1 px-3 py-2 text-left"
+      >
         {label}
-      </span>
-    </button>
+      </button>
+    </div>
   );
 }
 

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import ProviderRow from '../../components/table/ProviderRow';
 import SearchBar from '../../components/search/SearchBar';
+import CategoryFilterBar from '../../components/filters/CategoryFilterBar';
 import TableHeader from '../../components/table/TableHeader';
 import TablePagination from '../../components/table/TablePagination';
 import EmptyState from '../../components/table/EmptyState';
@@ -22,11 +24,17 @@ function ProvidersTable({
   searchFilters,
   onSearchFiltersChange,
 }) {
+  const [selectedCategory, setSelectedCategory] = useState('');
+
   const handleFilterChange = (field, value) => {
     onSearchFiltersChange({
       ...searchFilters,
       [field]: value,
     });
+  };
+
+  const handleCategoryChange = (categoryId) => {
+    setSelectedCategory(categoryId === selectedCategory ? '' : categoryId);
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -47,7 +55,12 @@ function ProvidersTable({
         onNameSearchChange={(e) => handleFilterChange('name', e.target.value)}
         onLocationSearchChange={(e) => handleFilterChange('location', e.target.value)}
         onStatusFilterChange={(e) => handleFilterChange('status', e.target.value)}
-        onFavoredClick={() => handleFilterChange('favored', !searchFilters.favored)}
+      />
+
+      {/* Category filter bar */}
+      <CategoryFilterBar
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleCategoryChange}
       />
 
       <div className="flex-1 overflow-auto">

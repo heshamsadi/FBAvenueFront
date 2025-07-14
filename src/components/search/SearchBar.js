@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import SearchInput from './SearchInput';
 import Select from '../common/Select';
-import Button from '../common/Button';
 
 /**
  * SearchBar - Table search bar with filters and search inputs
@@ -14,7 +13,6 @@ import Button from '../common/Button';
  * @param {Function} props.onNameSearchChange - Name search change handler
  * @param {Function} props.onLocationSearchChange - Location search change handler
  * @param {Function} props.onStatusFilterChange - Status filter change handler
- * @param {Function} props.onFavoredClick - Favored filter click handler
  * @returns {JSX.Element}
  */
 function SearchBar({
@@ -26,7 +24,6 @@ function SearchBar({
   onNameSearchChange,
   onLocationSearchChange,
   onStatusFilterChange,
-  onFavoredClick,
 }) {
   const typeOptions = [
     { value: 'hotel', label: 'Hotel' },
@@ -80,13 +77,6 @@ function SearchBar({
             onChange={onStatusFilterChange}
           />
         </div>
-
-        <Button variant="primary" size="sm" onClick={onFavoredClick}>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-          Filtered by favored
-        </Button>
       </div>
     </div>
   );
@@ -101,7 +91,6 @@ SearchBar.propTypes = {
   onNameSearchChange: PropTypes.func,
   onLocationSearchChange: PropTypes.func,
   onStatusFilterChange: PropTypes.func,
-  onFavoredClick: PropTypes.func,
 };
 
 SearchBar.defaultProps = {
@@ -113,7 +102,6 @@ SearchBar.defaultProps = {
   onNameSearchChange: () => {},
   onLocationSearchChange: () => {},
   onStatusFilterChange: () => {},
-  onFavoredClick: () => {},
 };
 
 export default SearchBar;
