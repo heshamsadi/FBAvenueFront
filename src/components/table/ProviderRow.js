@@ -1,78 +1,135 @@
 import PropTypes from 'prop-types';
-import TypeBadge from '../common/TypeBadge';
-import StatusBadge from '../common/StatusBadge';
+import { useState } from 'react';
+import { FiStar, FiMail } from 'react-icons/fi';
+import { PROVIDER_TYPE_CONFIG, PROVIDER_STATUS_CONFIG } from '../../lib/constants';
 
 /**
  * ProviderRow component - displays a single provider row in the table
  * @param {Object} props
  * @param {Object} props.provider - Provider data
  * @param {boolean} props.isSelected - Whether the row is selected
- * @param {Function} props.onProviderSelect - Function to handle provider selection
+ * @param {Function} props.onSelect - Function to handle provider selection
  * @returns {JSX.Element}
  */
-function ProviderRow({ provider, isSelected, onProviderSelect }) {
+function ProviderRow({ provider, isSelected, onSelect }) {
+  const [isFavorited, setIsFavorited] = useState(provider.favorites > 0);
+  
+  const handleFavoriteToggle = (e) => {
+    e.stopPropagation();
+    setIsFavorited(!isFavorited);
+  };
+
+  const handleCheckAction = (e) => {
+    e.stopPropagation();
+    // Handle check action
+  };
+
   return (
     <tr
-      onClick={() => onProviderSelect(provider)}
+      onClick={() => onSelect(provider.id)}
       className={`hover:bg-gray-50 cursor-pointer transition-colors text-sm ${isSelected ? 'bg-blue-50' : ''}`}
     >
-      <td className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-3">
+      {/* Selected */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <div className="flex items-center">
           <input
             type="checkbox"
             checked={isSelected}
-            onChange={() => onProviderSelect(provider)}
+            onChange={() => onSelect(provider.id)}
             onClick={(e) => e.stopPropagation()}
             className="h-4 w-4 text-main-blue focus:ring-main-blue border-gray-300 rounded"
+            aria-label={`Select ${provider.name}`}
           />
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-gray-900">{provider.name}</span>
-              <span className="text-gray-500">
-                (
-                {provider.id}
-                )
-              </span>
-            </div>
-            <TypeBadge type={provider.type} />
-          </div>
         </div>
       </td>
-      <td className="px-6 py-4 border-b border-gray-200">
+
+      {/* Date Added */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="text-gray-700">{provider.dateAdded}</span>
+      </td>
+
+      {/* Type */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="text-gray-700">
+          {PROVIDER_TYPE_CONFIG[provider.type]?.label || provider.type}
+        </span>
+      </td>
+
+      {/* Name */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="font-medium text-gray-900">{provider.name}</span>
+      </td>
+
+      {/* Continent */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="text-gray-700">{provider.continent || '-'}</span>
+      </td>
+
+      {/* Country */}
+      <td className="px-3 py-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full" />
-          <span className="text-gray-700">{provider.location}</span>
+          <span className="text-gray-700">{provider.country}</span>
         </div>
       </td>
-      <td className="px-6 py-4 border-b border-gray-200">
-        <StatusBadge status={provider.status} />
+
+      {/* City */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="text-gray-700">{provider.city}</span>
       </td>
-      <td className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <span className="text-gray-700">{provider.contact}</span>
-        </div>
+
+      {/* Workspace */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="text-gray-700">{provider.workspace}</span>
       </td>
-      <td className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <span className="text-gray-700">{provider.services}</span>
-        </div>
+
+      {/* Status */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="text-gray-700">
+          {PROVIDER_STATUS_CONFIG[provider.status]?.label || provider.status}
+        </span>
       </td>
-      <td className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <span className="text-gray-700">{provider.capacity}</span>
-        </div>
+
+      {/* Views */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <span className="text-gray-700">{provider.views}</span>
       </td>
-      <td className="px-6 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
+
+      {/* Favorites */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <button
+          type="button"
+          onClick={handleFavoriteToggle}
+          className="hover:opacity-80 transition-opacity"
+          aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <FiStar 
+            className={`w-4 h-4 ${isFavorited ? 'text-yellow-400 fill-current' : 'text-gray-400'}`}
+            fill={isFavorited ? 'currentColor' : 'none'}
+          />
+        </button>
+      </td>
+
+      {/* Actions */}
+      <td className="px-3 py-4 border-b border-gray-200">
+        <div className="flex items-center rounded overflow-hidden text-sm font-medium transition-colors bg-main-blue text-white hover:bg-dark-blue w-[100px]">
+          {/* Left darker section with icon */}
           <button
             type="button"
-            className="px-3 py-1 bg-main-blue text-white text-xs font-medium rounded hover:bg-dark-blue transition-colors"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Handle edit action
-            }}
+            onClick={handleCheckAction}
+            className="flex items-center justify-center w-8 h-8 bg-dark-blue text-white"
+            aria-label="Check provider"
           >
-            Edit
+            <FiMail size={16} />
+          </button>
+
+          {/* Right section with title */}
+          <button
+            type="button"
+            onClick={handleCheckAction}
+            className="flex-1 px-3 py-2 text-left"
+          >
+            Check
           </button>
         </div>
       </td>
@@ -82,17 +139,20 @@ function ProviderRow({ provider, isSelected, onProviderSelect }) {
 
 ProviderRow.propTypes = {
   provider: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    dateAdded: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    location: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    continent: PropTypes.string,
+    country: PropTypes.string.isRequired,
+    city: PropTypes.string.isRequired,
+    workspace: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
-    contact: PropTypes.string.isRequired,
-    services: PropTypes.string.isRequired,
-    capacity: PropTypes.string.isRequired,
+    views: PropTypes.number.isRequired,
+    favorites: PropTypes.number.isRequired,
   }).isRequired,
   isSelected: PropTypes.bool.isRequired,
-  onProviderSelect: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default ProviderRow;

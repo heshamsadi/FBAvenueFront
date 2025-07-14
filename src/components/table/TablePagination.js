@@ -9,54 +9,32 @@ import PropTypes from 'prop-types';
  * @returns {JSX.Element}
  */
 function TablePagination({ currentPage, totalPages, onPageChange }) {
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
+  const handlePageClick = (page) => {
+    if (page !== currentPage) {
+      onPageChange(page);
     }
   };
 
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
-    }
-  };
+  // Generate array of page numbers
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
+    <div className="flex items-center justify-center px-4 py-3 border-t border-gray-200">
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={handlePrevious}
-          disabled={currentPage === 1}
-          className={`px-3 py-1 text-sm rounded ${
-            currentPage === 1
-              ? 'text-gray-400 cursor-not-allowed'
-              : 'text-main-blue hover:bg-gray-100'
-          }`}
-        >
-          Previous
-        </button>
-        <span className="text-sm text-gray-700">
-          Page
-          {' '}
-          {currentPage}
-          {' '}
-          of
-          {' '}
-          {totalPages}
-        </span>
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={currentPage === totalPages}
-          className={`px-3 py-1 text-sm rounded ${
-            currentPage === totalPages
-              ? 'text-gray-400 cursor-not-allowed'
-              : 'text-main-blue hover:bg-gray-100'
-          }`}
-        >
-          Next
-        </button>
+        {pageNumbers.map((page) => (
+          <button
+            key={page}
+            type="button"
+            onClick={() => handlePageClick(page)}
+            className={`w-8 h-8 flex items-center justify-center text-sm font-medium transition-colors ${
+              page === currentPage
+                ? 'bg-main-blue text-white rounded-md'
+                : 'text-gray-700 hover:text-main-blue'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
       </div>
     </div>
   );

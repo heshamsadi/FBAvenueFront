@@ -19,25 +19,30 @@ export const PROVIDER_TYPE_CONFIG = {
     color: 'bg-main-blue',
     icon: '🏨',
   },
-  [PROVIDER_TYPES.RESTAURANT]: {
-    label: 'Restaurant',
+  [PROVIDER_TYPES.PITCH]: {
+    label: 'Pitch',
     color: 'bg-green-500',
-    icon: '🍽️',
+    icon: '⚽',
   },
-  [PROVIDER_TYPES.ACTIVITY]: {
-    label: 'Activity',
-    color: 'bg-yellow-500',
-    icon: '🏃',
+  [PROVIDER_TYPES.STADIUM]: {
+    label: 'Stadium',
+    color: 'bg-red-500',
+    icon: '🏟️',
   },
   [PROVIDER_TYPES.TRANSPORT]: {
     label: 'Transport',
     color: 'bg-purple-500',
     icon: '🚗',
   },
-  [PROVIDER_TYPES.VENUE]: {
-    label: 'Venue',
-    color: 'bg-red-500',
-    icon: '🏟️',
+  [PROVIDER_TYPES.LAUNDRY]: {
+    label: 'Laundry',
+    color: 'bg-blue-500',
+    icon: '🧺',
+  },
+  [PROVIDER_TYPES.WATER_BOLT]: {
+    label: 'Water Bolt',
+    color: 'bg-cyan-500',
+    icon: '💧',
   },
 };
 
