@@ -1,0 +1,77 @@
+1  Core Principles
+
+Component‑first, DRY always – check if a component already exists before writing JSX. Never copy‑paste UI.
+
+Single source of truth – business/state logic lives in hooks or Zustand slices, not in page components.
+
+Clear, self‑documenting code – use PropTypes and JSDoc for every component; avoid magic numbers/strings.
+
+Tailwind only – style with utility classes; no other CSS frameworks or inline styles.
+
+Accessible by default – all interactive elements need aria‑* labels and keyboard focus.
+
+2  Project Layout (keep it tidy)
+src/
+├─ components/   # Reusable, presentation‑only blocks
+├─ features/     # Screens or bigger composites (Map, Providers)
+├─ hooks/        # Side‑effect & data hooks (useProviders, useMap)
+├─ store/        # Zustand slices
+└─ lib/          # Helpers & constants
+
+No logic in components/ other than rendering.
+
+3  Tech Stack (minimum)
+
+Concern
+
+Choice
+
+Runtime
+
+React 18 (JavaScript ES2023)
+
+Build Tool
+
+Create React App (CRA) – JavaScript template; no Vite
+
+Styling
+
+Tailwind CSS
+
+Maps
+
+react‑leaflet
+
+State
+
+Zustand (or Context)
+
+Testing
+
+Vitest + React‑Testing‑Library
+
+Anything else is optional; discuss additions in PRs.
+
+4  Coding Rules
+
+No duplicated JSX/logic – extract a component or helper.
+
+Side effects only in hooks (useEffect, custom hooks).  Components stay pure.
+
+No console.log, unused variables, or commented‑out code in committed files.
+
+Secrets/keys belong in .env, never in the repo.
+
+Commit messages follow Conventional Commits.
+
+5  Definition of Done
+
+UI matches the client screenshot.
+
+No ESLint errors.
+
+At least one unit test for every custom hook.
+
+Lighthouse performance ≥ 90.
+
+If any item is missing, the task isn’t complete
